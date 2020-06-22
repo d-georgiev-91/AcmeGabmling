@@ -1,4 +1,4 @@
-﻿namespace AcmeGambling
+﻿namespace AcmeGambling.Symbols
 {
 
     /// <inheritdoc cref="Symbol"/>

@@ -1,4 +1,4 @@
-﻿namespace AcmeGambling
+﻿namespace AcmeGambling.Symbols
 {
     /// <summary>
     /// Class representing a reel symbol
