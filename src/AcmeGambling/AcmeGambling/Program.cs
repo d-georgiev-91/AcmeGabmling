@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using AcmeGambling.Symbols;
 
 namespace AcmeGambling
 {
@@ -7,18 +10,27 @@ namespace AcmeGambling
         static void Main(string[] args)
         {
             var balance = ReadBalance();
-            Console.WriteLine(balance);
 
-            while (balance >= 0)
+            while (balance > 0)
             {
-                // TODO: input steak till its valid
                 var steak = ReadSteak(balance);
-                
-                // TODO: Play
-                Console.WriteLine(steak);
-            }
 
-            Console.WriteLine(balance);
+                var reward = Play(steak);
+
+                if (reward > 0)
+                {
+                    balance += reward;
+                    Console.WriteLine($"You won: {reward}");
+                }
+                else
+                {
+                    balance -= steak;
+                    Console.WriteLine($"You lost: {steak}");
+                }
+
+                Console.WriteLine($"Current balance: {balance}");
+                Console.WriteLine(new string('-', Console.BufferWidth));
+            }
         }
 
         private static decimal ReadBalance()
@@ -51,6 +63,55 @@ namespace AcmeGambling
 
             return steak;
         }
+        private static decimal Play(decimal steak)
+        {
+            var rowsCount = 4;
+            var columnsCount = 3;
+            var machine = new Symbol[rowsCount, columnsCount];
+            var generator = new Generator();
+            var possibleSymbols = new List<Symbol> { new Apple(), new Banana(), new Pineapple(), new Wildcard() };
+            var winCoefficient = 0m;
+            
+            Console.WriteLine(new string('-', columnsCount));
 
+            for (int rowIndex = 0; rowIndex < rowsCount; rowIndex++)
+            {
+                var matches = new Dictionary<Symbol, int>();
+
+                for (int columnIndex = 0; columnIndex < columnsCount; columnIndex++)
+                {
+                    var symbol = generator.GetRandomSymbol(possibleSymbols);
+
+                    Console.Write(symbol.Character);
+
+                    machine[rowIndex, columnIndex] = symbol;
+
+                    if (!matches.ContainsKey(symbol))
+                    {
+                        matches.Add(symbol, 0);
+                    }
+
+                    matches[symbol]++;
+                }
+
+                var mostFrequentSymbol = matches
+                    .OrderByDescending(m => m.Value)
+                    .First();
+
+                if (mostFrequentSymbol.Value == columnsCount ||
+                    mostFrequentSymbol.Value == columnsCount - 1 && matches.Count(s => s.Key is Wildcard) == 1 ||
+                    mostFrequentSymbol.Value == 1 && matches.Count(s => s.Key is Wildcard) == columnsCount - 1
+                    )
+                {
+                    winCoefficient += mostFrequentSymbol.Key.WinCoefficient * mostFrequentSymbol.Value;
+                }
+
+                Console.WriteLine();
+            }
+            
+            Console.WriteLine(new string('-', columnsCount));
+
+            return winCoefficient * steak;
+        }
     }
 }
