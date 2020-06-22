@@ -3,21 +3,28 @@
     /// <summary>
     /// Class representing a reel symbol
     /// </summary>
-    public abstract class Symbol
+    public class Symbol
     {
+        protected Symbol(string character, decimal winCoefficient, byte appearanceProbability)
+        {
+            Character = character;
+            WinCoefficient = winCoefficient;
+            AppearanceProbability = appearanceProbability;
+        }
+
         /// <summary>
         /// Placeholder holding the character of the symbol
         /// </summary>
-        public abstract string Character { get; protected set; }
+        public string Character { get; }
 
         /// <summary>
         /// The win coefficient
         /// </summary>
-        public abstract decimal WinCoefficient { get; protected set; }
+        public decimal WinCoefficient { get; }
 
         /// <summary>
         /// Appearance percentage
         /// </summary>
-        public abstract byte AppearanceProbability { get; protected set; }
+        public byte AppearanceProbability { get; }
     }
 }
