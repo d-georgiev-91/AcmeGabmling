@@ -37,7 +37,7 @@ namespace AcmeGambling
         {
             if (amount <= 0)
             {
-                throw new ArgumentException("Balance cannot be 0");
+                throw new ArgumentException($"{nameof(Balance)} cannot be negative number");
             }
 
             Balance = amount;
@@ -46,6 +46,11 @@ namespace AcmeGambling
         /// <inheritdoc cref="ISlotMachine.Spin"/>
         public void Spin(decimal steak)
         {
+            if (steak > Balance)
+            {
+                throw new ArgumentException($"{nameof(steak)} should be less or equal to {nameof(Balance)}");
+            }
+
             var machine = new Symbol[ReelSymbolsCount, ReelsCount];
             var winCoefficient = 0m;
 
@@ -86,7 +91,14 @@ namespace AcmeGambling
 
             Console.WriteLine(new string('-', ReelsCount));
 
-            Balance += winCoefficient * steak;
+            if (winCoefficient > 0)
+            {
+                Balance += winCoefficient * steak;
+            }
+            else
+            {
+                Balance -= steak;
+            }
         }
     }
 }

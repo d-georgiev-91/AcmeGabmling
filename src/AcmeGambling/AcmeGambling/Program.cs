@@ -9,26 +9,28 @@ namespace AcmeGambling
     {
         static void Main(string[] args)
         {
-            var balance = ReadBalance();
+            var randomSymbolGenerator = new RandomSymbolGenerator();
+            var slotMachine = new SlotMachine(randomSymbolGenerator);
 
-            while (balance > 0)
+            slotMachine.Deposit(ReadBalance());
+
+            while (slotMachine.Balance > 0)
             {
-                var steak = ReadSteak(balance);
+                var steak = ReadSteak(slotMachine.Balance);
+                slotMachine.Spin(steak);
 
-                var reward = Play(steak);
+                //if (reward > 0)
+                //{
+                //    balance += reward;
+                //    Console.WriteLine($"You won: {reward}");
+                //}
+                //else
+                //{
+                //    balance -= steak;
+                //    Console.WriteLine($"You lost: {steak}");
+                //}
 
-                if (reward > 0)
-                {
-                    balance += reward;
-                    Console.WriteLine($"You won: {reward}");
-                }
-                else
-                {
-                    balance -= steak;
-                    Console.WriteLine($"You lost: {steak}");
-                }
-
-                Console.WriteLine($"Current balance: {balance}");
+                Console.WriteLine($"Current balance: {slotMachine.Balance}");
                 Console.WriteLine(new string('-', Console.BufferWidth));
             }
         }
