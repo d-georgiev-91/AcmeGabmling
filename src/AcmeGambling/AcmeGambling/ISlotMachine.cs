@@ -16,10 +16,9 @@
         void Deposit(decimal amount);
 
         /// <summary>
-        /// Spins the sloth machine reels
+        /// Spins the sloth machine reels and updates balance base on if it's a win or lose
         /// </summary>
         /// <param name="steak">The steak</param>
-        /// <returns>The won amount of won reward</returns>
-        decimal Spin(decimal steak);
+        void Spin(decimal steak);
     }
 }

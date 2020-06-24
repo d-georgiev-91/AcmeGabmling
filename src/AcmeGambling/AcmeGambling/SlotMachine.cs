@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using AcmeGambling.Symbols;
 
 namespace AcmeGambling
@@ -43,9 +44,49 @@ namespace AcmeGambling
         }
 
         /// <inheritdoc cref="ISlotMachine.Spin"/>
-        public decimal Spin(decimal steak)
+        public void Spin(decimal steak)
         {
-            return 0m;
+            var machine = new Symbol[ReelSymbolsCount, ReelsCount];
+            var winCoefficient = 0m;
+
+            for (int symbolIndex = 0; symbolIndex < ReelSymbolsCount; symbolIndex++)
+            {
+                var matches = new Dictionary<Symbol, int>();
+
+                for (int reelIndex = 0; reelIndex < ReelsCount; reelIndex++)
+                {
+                    var symbol = _randomSymbolGenerator.Generate(PossibleSymbols);
+
+                    Console.Write(symbol.Character);
+
+                    machine[symbolIndex, reelIndex] = symbol;
+
+                    if (!matches.ContainsKey(symbol))
+                    {
+                        matches.Add(symbol, 0);
+                    }
+
+                    matches[symbol]++;
+                }
+
+                var mostFrequentSymbol = matches
+                    .OrderByDescending(m => m.Value)
+                    .First();
+
+                if (mostFrequentSymbol.Value == ReelsCount ||
+                    mostFrequentSymbol.Value == ReelsCount - 1 && matches.Count(s => s.Key is Wildcard) == 1 ||
+                    mostFrequentSymbol.Value == 1 && matches.Count(s => s.Key is Wildcard) == ReelsCount - 1
+                )
+                {
+                    winCoefficient += mostFrequentSymbol.Key.WinCoefficient * mostFrequentSymbol.Value;
+                }
+
+                Console.WriteLine();
+            }
+
+            Console.WriteLine(new string('-', ReelsCount));
+
+            Balance += winCoefficient * steak;
         }
     }
 }

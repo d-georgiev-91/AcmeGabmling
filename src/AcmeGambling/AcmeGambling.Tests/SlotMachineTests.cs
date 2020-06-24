@@ -41,12 +41,5 @@ namespace AcmeGambling.Tests
             _slotMachine.Deposit(depositAmount);
             Assert.That(_slotMachine.Balance, Is.EqualTo(expectedBalanceAfterDeposit));
         }
-
-        [Test]
-        public void SpinTest()
-        {
-            var reward = _slotMachine.Spin(3);
-            Assert.That(reward, Is.Zero);
-        }
     }
 }
