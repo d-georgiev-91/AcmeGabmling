@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using NSubstitute;
+using NUnit.Framework;
 
 namespace AcmeGambling.Tests
 {
@@ -6,11 +7,13 @@ namespace AcmeGambling.Tests
     public class SlotMachineTests
     {
         private ISlotMachine _slotMachine;
+        private IRandomSymbolGenerator _randomSymbolGenerator;
 
         [SetUp]
         public void Setup()
         {
-            _slotMachine = new SlotMachine();
+            _randomSymbolGenerator = Substitute.For<IRandomSymbolGenerator>();
+            _slotMachine = new SlotMachine(_randomSymbolGenerator);
         }
 
         [Test]

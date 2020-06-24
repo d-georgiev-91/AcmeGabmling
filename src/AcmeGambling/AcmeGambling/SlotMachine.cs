@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using AcmeGambling.Symbols;
 
 namespace AcmeGambling
 {
@@ -6,9 +8,23 @@ namespace AcmeGambling
     public class SlotMachine : ISlotMachine
     {
         private const int InitialBalance = 0;
-
-        public SlotMachine()
+        
+        // TODO: Inject and configure
+        private const int ReelsCount = 3;
+        private const int ReelSymbolsCount = 4;
+        private static readonly IReadOnlyCollection<Symbol> PossibleSymbols = new List<Symbol>
         {
+            new Apple(),
+            new Banana(),
+            new Pineapple(), 
+            new Wildcard()
+        };
+
+        private readonly IRandomSymbolGenerator _randomSymbolGenerator;
+
+        public SlotMachine(IRandomSymbolGenerator randomSymbolGenerator)
+        {
+            _randomSymbolGenerator = randomSymbolGenerator;
             Balance = InitialBalance;
         }
 
