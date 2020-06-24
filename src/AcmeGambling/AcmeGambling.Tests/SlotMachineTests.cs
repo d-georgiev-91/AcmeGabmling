@@ -36,7 +36,7 @@ namespace AcmeGambling.Tests
         public void WhenDepositWith5ValueIsCalledThenBalanceShouldIncreaseBy5()
         {
             var balanceBeforeDeposit = _slotMachine.Balance;
-            var depositAmount = 5;
+            const int depositAmount = 5;
             var expectedBalanceAfterDeposit = balanceBeforeDeposit + depositAmount;
             _slotMachine.Deposit(depositAmount);
             Assert.That(_slotMachine.Balance, Is.EqualTo(expectedBalanceAfterDeposit));
