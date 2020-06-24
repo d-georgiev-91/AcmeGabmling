@@ -21,7 +21,6 @@ namespace AcmeGambling
         public Symbol Generate(IReadOnlyCollection<Symbol> symbols)
         {
             var totalAppearanceProbability = symbols.Sum(x => x.AppearanceProbability);
-            Symbol winningSector = null;
 
             var rgn = _random.Next(0, totalAppearanceProbability);
             var sum = 0;
@@ -31,12 +30,12 @@ namespace AcmeGambling
                 sum += symbol.AppearanceProbability;
                 if (rgn < sum)
                 {
-                    winningSector = symbol;
-                    break;
+                    return symbol;
                 }
             }
 
-            return winningSector;
+            // TODO: take action when symbol is not generated
+            return null;
         }
     }
 }
