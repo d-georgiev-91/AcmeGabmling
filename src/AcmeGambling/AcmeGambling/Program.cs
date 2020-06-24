@@ -68,7 +68,7 @@ namespace AcmeGambling
             var rowsCount = 4;
             var columnsCount = 3;
             var machine = new Symbol[rowsCount, columnsCount];
-            var generator = new Generator();
+            var generator = new RandomSymbolGenerator();
             var possibleSymbols = new List<Symbol> { new Apple(), new Banana(), new Pineapple(), new Wildcard() };
             var winCoefficient = 0m;
             
@@ -80,7 +80,7 @@ namespace AcmeGambling
 
                 for (int columnIndex = 0; columnIndex < columnsCount; columnIndex++)
                 {
-                    var symbol = generator.GetRandomSymbol(possibleSymbols);
+                    var symbol = generator.Generate(possibleSymbols);
 
                     Console.Write(symbol.Character);
 

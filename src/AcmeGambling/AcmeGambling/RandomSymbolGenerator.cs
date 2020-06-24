@@ -5,11 +5,20 @@ using AcmeGambling.Symbols;
 
 namespace AcmeGambling
 {
-    public class Generator
+    /// <summary>
+    /// Trivial random symbols generator
+    /// </summary>
+    public class RandomSymbolGenerator : IRandomSymbolGenerator
     {
-        private readonly Random _random = new Random();
+        private readonly Random _random;
 
-        public Symbol GetRandomSymbol(IReadOnlyCollection<Symbol> symbols)
+        public RandomSymbolGenerator()
+        {
+            _random = new Random();
+        }
+
+        /// <inheritdoc cref="IRandomSymbolGenerator.Generate"/>
+        public Symbol Generate(IReadOnlyCollection<Symbol> symbols)
         {
             var totalAppearanceProbability = symbols.Sum(x => x.AppearanceProbability);
             Symbol winningSector = null;
