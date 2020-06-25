@@ -1,15 +1,17 @@
-﻿namespace AcmeGambling.Symbols
+﻿using AcmeGambling.Settings;
+
+namespace AcmeGambling.Symbols
 {
     /// <summary>
     /// Class representing a reel symbol
     /// </summary>
     public class Symbol
     {
-        protected Symbol(string character, decimal winCoefficient, byte appearanceProbability)
+        protected Symbol(SymbolSetting symbolSetting)
         {
-            Character = character;
-            WinCoefficient = winCoefficient;
-            AppearanceProbability = appearanceProbability;
+            Character = symbolSetting.Character;
+            WinCoefficient = symbolSetting.WinCoefficient;
+            AppearanceProbability = symbolSetting.AppearanceProbability;
         }
 
         /// <summary>

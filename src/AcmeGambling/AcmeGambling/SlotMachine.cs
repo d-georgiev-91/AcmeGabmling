@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using AcmeGambling.Settings;
 using AcmeGambling.Symbols;
+using Microsoft.Extensions.Options;
 
 namespace AcmeGambling
 {
@@ -9,23 +11,18 @@ namespace AcmeGambling
     {
         private const int InitialBalance = 0;
 
-        // TODO: Inject and configure
-        private const int ReelsCount = 3;
-        private const int ReelSymbolsCount = 4;
-
-        private static readonly IReadOnlyCollection<Symbol> PossibleSymbols = new List<Symbol>
-        {
-            new Apple(),
-            new Banana(),
-            new Pineapple(),
-            new Wildcard()
-        };
-
         private readonly IRandomSymbolGenerator _randomSymbolGenerator;
+        private readonly int _reelsCount;
+        private readonly int _reelSymbolsCount;
+        private ISymbolsProvider _symbolsProvider;
 
-        public SlotMachine(IRandomSymbolGenerator randomSymbolGenerator)
+        public SlotMachine(IRandomSymbolGenerator randomSymbolGenerator, 
+            IOptions<SlotMachineSettings> slotMachineSettings, ISymbolsProvider symbolsProvider)
         {
             _randomSymbolGenerator = randomSymbolGenerator;
+            _symbolsProvider = symbolsProvider;
+            _reelsCount = slotMachineSettings.Value.ReelsCount;
+            _reelSymbolsCount = slotMachineSettings.Value.ReelSymbolsCount;
             Balance = InitialBalance;
         }
 
@@ -74,14 +71,14 @@ namespace AcmeGambling
 
         private Symbol[,] GenerateReels()
         {
-            var machine = new Symbol[ReelSymbolsCount, ReelsCount];
+            var machine = new Symbol[_reelSymbolsCount, _reelsCount];
 
-            for (int symbolIndex = 0; symbolIndex < ReelSymbolsCount; symbolIndex++)
+            for (int symbolIndex = 0; symbolIndex < _reelSymbolsCount; symbolIndex++)
             {
 
-                for (int reelIndex = 0; reelIndex < ReelsCount; reelIndex++)
+                for (int reelIndex = 0; reelIndex < _reelsCount; reelIndex++)
                 {
-                    var symbol = _randomSymbolGenerator.Generate(PossibleSymbols);
+                    var symbol = _randomSymbolGenerator.Generate(_symbolsProvider.GetSymbols());
                     machine[symbolIndex, reelIndex] = symbol;
                 }
             }
@@ -93,12 +90,12 @@ namespace AcmeGambling
         {
             var totalWinCoefficient = 0m;
 
-            for (int symbolIndex = 0; symbolIndex < ReelSymbolsCount; symbolIndex++)
+            for (int symbolIndex = 0; symbolIndex < _reelSymbolsCount; symbolIndex++)
             {
                 var pivotSymbol = reels[symbolIndex, 0];
                 var rowWinCoefficient = pivotSymbol.WinCoefficient;
 
-                for (int reelIndex = 1; reelIndex < ReelsCount; reelIndex++)
+                for (int reelIndex = 1; reelIndex < _reelsCount; reelIndex++)
                 {
                     var currentSymbol = reels[symbolIndex, reelIndex];
 

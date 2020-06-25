@@ -1,0 +1,24 @@
+{
+  "Symbols": {
+    "Apple": {
+      "Character": "A",
+      "WinCoefficient": 0.4,
+      "AppearanceProbability": 45
+    },
+    "Banana": {
+      "Character": "B",
+      "WinCoefficient": 0.6,
+      "AppearanceProbability": 35
+    },
+    "Pineapple": {
+      "Character": "P",
+      "WinCoefficient": 0.8,
+      "AppearanceProbability": 15
+    },
+    "Wildcard": {
+      "Character": "*",
+      "WinCoefficient": 0,
+      "AppearanceProbability": 5
+    }
+  }
+}

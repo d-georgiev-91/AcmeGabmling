@@ -1,10 +1,13 @@
-﻿namespace AcmeGambling.Symbols
+﻿using AcmeGambling.Settings;
+using Microsoft.Extensions.Options;
+
+namespace AcmeGambling.Symbols
 {
     /// <inheritdoc cref="Symbol"/>
     public class Wildcard : Symbol
     {
-        public Wildcard() :
-            base("*", 0, 5)
+        public Wildcard(SymbolSetting symbolsSettings) :
+            base(symbolsSettings)
         {
         }
     }

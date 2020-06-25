@@ -1,5 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+using AcmeGambling.Settings;
 using AcmeGambling.Symbols;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -10,12 +14,48 @@ namespace AcmeGambling.Tests
     {
         private ISlotMachine _slotMachine;
         private IRandomSymbolGenerator _randomSymbolGenerator;
+        
+        private Apple _apple;
+        private IOptions<SymbolsSettings> _symbolSettingsOptions;
+        private Pineapple _pineapple;
+        private Banana _banana;
+        private Wildcard _wildCard;
+
+        [OneTimeSetUp]
+        public void OneTineSetup()
+        {
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("testsettings.json")
+                .Build();
+
+            var symbolsSettings = new SymbolsSettings();
+
+            configuration.GetSection("Symbols").Bind(symbolsSettings);
+            _symbolSettingsOptions = Options.Create(symbolsSettings);
+        }
 
         [SetUp]
         public void Setup()
         {
+            _apple = new Apple(_symbolSettingsOptions.Value.Apple);
+            _pineapple = new Pineapple(_symbolSettingsOptions.Value.Pineapple);
+            _banana = new Banana(_symbolSettingsOptions.Value.Banana);
+            _wildCard = new Wildcard(_symbolSettingsOptions.Value.WildCard);
+
             _randomSymbolGenerator = Substitute.For<IRandomSymbolGenerator>();
-            _slotMachine = new SlotMachine(_randomSymbolGenerator);
+            var slotMachineOptions = Substitute.For<IOptions<SlotMachineSettings>>();
+            slotMachineOptions.Value.Returns(new SlotMachineSettings()
+            {
+                ReelSymbolsCount = 4,
+                ReelsCount = 3,
+            });
+
+            var symbolsProvider = Substitute.For<ISymbolsProvider>();
+
+            _slotMachine = new SlotMachine(_randomSymbolGenerator, 
+                slotMachineOptions, 
+                symbolsProvider);
         }
 
         [Test]
@@ -53,10 +93,10 @@ namespace AcmeGambling.Tests
             (
                 new Symbol[]
                 {
-                    new Apple(), new Banana(), new Pineapple(),
-                    new Apple(), new Banana(), new Pineapple(),
-                    new Apple(), new Banana(), new Pineapple(),
-                    new Apple(), new Banana(), new Pineapple()
+                    _apple, _banana, _pineapple,
+                    _apple, _banana, _pineapple,
+                    _apple, _banana, _pineapple,
+                    _apple, _banana, _pineapple
                 }
             );
 
@@ -79,10 +119,10 @@ namespace AcmeGambling.Tests
             (
                 new Symbol[]
                 {
-                    new Apple(), new Banana(), new Pineapple(),
-                    new Apple(), new Banana(), new Pineapple(),
-                    new Apple(), new Banana(), new Pineapple(),
-                    new Apple(), new Banana(), new Pineapple()
+                    _apple, _banana, _pineapple,
+                    _apple, _banana, _pineapple,
+                    _apple, _banana, _pineapple,
+                    _apple, _banana, _pineapple
                 }
             );
 
@@ -97,19 +137,18 @@ namespace AcmeGambling.Tests
         [Test]
         public void WhenThereIsOnlyOneLineWithThreeWinningSymbolsAndTheyAreApplesThenDepositShouldIncreaseByTheSumOfWinCoefficientOfAllApplesMultipliedBySteak()
         {
-            var apple = new Apple();
             const decimal depositAmount = 100;
             const decimal steakAmount = 10;
-            var expectedBalance = depositAmount + 3 * apple.WinCoefficient * steakAmount;
+            var expectedBalance = depositAmount + 3 * _apple.WinCoefficient * steakAmount;
 
             var nonWiningCombination = new Queue<Symbol>
             (
                 new Symbol[]
                 {
-                    apple, apple, apple,
-                    apple, new Banana(), new Pineapple(),
-                    apple, new Banana(), new Pineapple(),
-                    apple, new Banana(), new Pineapple()
+                    _apple, _apple, _apple,
+                    _apple, _banana, _pineapple,
+                    _apple, _banana, _pineapple,
+                    _apple, _banana, _pineapple
                 }
             );
 
@@ -124,20 +163,18 @@ namespace AcmeGambling.Tests
         [Test]
         public void WhenThereIsOnlyOneLineWithTwoApplesAndOneWildCardThenDepositShouldIncreaseByTheSumOfWinCoefficientOfTheTwoAppleMultipliedBySteak()
         {
-            var apple = new Apple();
-            var wildCard = new Wildcard();
             const decimal depositAmount = 100;
             const decimal steakAmount = 10;
-            var expectedBalance = depositAmount + 2 * apple.WinCoefficient * steakAmount;
+            var expectedBalance = depositAmount + 2 * _apple.WinCoefficient * steakAmount;
 
             var nonWiningCombination = new Queue<Symbol>
             (
                 new Symbol[]
                 {
-                    apple, wildCard, apple,
-                    apple, new Banana(), new Pineapple(),
-                    apple, new Banana(), new Pineapple(),
-                    apple, new Banana(), new Pineapple()
+                    _apple, _wildCard, _apple,
+                    _apple, _banana, _pineapple,
+                    _apple, _banana, _pineapple,
+                    _apple, _banana, _pineapple
                 }
             );
 
@@ -152,20 +189,18 @@ namespace AcmeGambling.Tests
         [Test]
         public void WhenThereIsOnlyOneLineWithOneAppleAndTwoWildCardsThenDepositShouldIncreaseByTheSumOfWinCoefficientOfTheAppleMultipliedBySteak()
         {
-            var apple = new Apple();
-            var wildCard = new Wildcard();
             const decimal depositAmount = 100;
             const decimal steakAmount = 10;
-            var expectedBalance = depositAmount + apple.WinCoefficient * steakAmount;
+            var expectedBalance = depositAmount + _apple.WinCoefficient * steakAmount;
 
             var nonWiningCombination = new Queue<Symbol>
             (
                 new Symbol[]
                 {
-                    apple, wildCard, wildCard,
-                    apple, new Banana(), new Pineapple(),
-                    apple, new Banana(), new Pineapple(),
-                    apple, new Banana(), new Pineapple()
+                    _apple, _wildCard, _wildCard,
+                    _apple, _banana, _pineapple,
+                    _apple, _banana, _pineapple,
+                    _apple, _banana, _pineapple
                 }
             );
 
@@ -180,20 +215,18 @@ namespace AcmeGambling.Tests
         [Test]
         public void WhenThereIsOnlyOneLineWithTwoWildCardsAndOneAppleThenDepositShouldIncreaseByTheSumOfWinCoefficientOfTheAppleMultipliedBySteak()
         {
-            var apple = new Apple();
-            var wildCard = new Wildcard();
             const decimal depositAmount = 100;
             const decimal steakAmount = 10;
-            var expectedBalance = depositAmount + apple.WinCoefficient * steakAmount;
+            var expectedBalance = depositAmount + _apple.WinCoefficient * steakAmount;
 
             var nonWiningCombination = new Queue<Symbol>
             (
                 new Symbol[]
                 {
-                    wildCard, wildCard, apple,
-                    apple, new Banana(), new Pineapple(),
-                    apple, new Banana(), new Pineapple(),
-                    apple, new Banana(), new Pineapple()
+                    _wildCard, _wildCard, _apple,
+                    _apple, _banana, _pineapple,
+                    _apple, _banana, _pineapple,
+                    _apple, _banana, _pineapple
                 }
             );
 
@@ -208,8 +241,6 @@ namespace AcmeGambling.Tests
         [Test]
         public void WhenFirstSymbolInFirstRowIsBananaAndSecondIsWildCardAndThirdSymbolIsAppleAndThereAreNoOtherWinningRowsBalanceShouldBeReduced()
         {
-            var apple = new Apple();
-            var wildCard = new Wildcard();
             const decimal depositAmount = 100;
             const decimal steakAmount = 10;
             var expectedBalance = depositAmount - steakAmount;
@@ -218,10 +249,10 @@ namespace AcmeGambling.Tests
             (
                 new Symbol[]
                 {
-                    new Banana(), wildCard, apple,
-                    apple, new Pineapple(), new Banana(),
-                    apple, new Banana(), new Pineapple(),
-                    apple, new Banana(), new Pineapple()
+                    _banana, _wildCard, _apple,
+                    _apple, _pineapple, _banana,
+                    _apple, _banana, _pineapple,
+                    _apple, _banana, _pineapple
                 }
             );
 
@@ -236,8 +267,6 @@ namespace AcmeGambling.Tests
         [Test]
         public void WhenFirstRowIsAllWildCardsAndThereAreNoOtherWinningRowsBalanceShouldBeReduced()
         {
-            var apple = new Apple();
-            var wildCard = new Wildcard();
             const decimal depositAmount = 100;
             const decimal steakAmount = 10;
             var expectedBalance = depositAmount - steakAmount;
@@ -246,10 +275,10 @@ namespace AcmeGambling.Tests
             (
                 new Symbol[]
                 {
-                    wildCard, wildCard, wildCard,
-                    apple, new Pineapple(), new Banana(),
-                    apple, new Banana(), new Pineapple(),
-                    apple, new Banana(), new Pineapple()
+                    _wildCard, _wildCard, _wildCard,
+                    _apple, _pineapple, _banana,
+                    _apple, _banana, _pineapple,
+                    _apple, _banana, _pineapple
                 }
             );
 
@@ -264,8 +293,6 @@ namespace AcmeGambling.Tests
         [Test]
         public void WhenFirstSymbolInFirstRowIsBananaAndSecondIsAppleCardAndThirdSymbolIsWildCardAndThereAreNoOtherWinningRowsBalanceShouldBeReduced()
         {
-            var apple = new Apple();
-            var wildCard = new Wildcard();
             const decimal depositAmount = 100;
             const decimal steakAmount = 10;
             var expectedBalance = depositAmount - steakAmount;
@@ -274,10 +301,10 @@ namespace AcmeGambling.Tests
             (
                 new Symbol[]
                 {
-                    new Banana(), apple, wildCard,
-                    apple, new Pineapple(), new Banana(),
-                    apple, new Banana(), new Pineapple(),
-                    apple, new Banana(), new Pineapple()
+                    _banana, _apple, _wildCard,
+                    _apple, _pineapple, _banana,
+                    _apple, _banana, _pineapple,
+                    _apple, _banana, _pineapple
                 }
             );
 

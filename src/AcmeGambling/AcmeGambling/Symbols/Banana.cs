@@ -1,10 +1,13 @@
-﻿namespace AcmeGambling.Symbols
+﻿using AcmeGambling.Settings;
+using Microsoft.Extensions.Options;
+
+namespace AcmeGambling.Symbols
 {
     /// <inheritdoc cref="Symbol"/>
     public class Banana : Symbol
     {
-        public Banana() :
-            base("B", 0.6M, 35)
+        public Banana(SymbolSetting symbolsSettings) :
+            base(symbolsSettings)
         {
         }
     }
