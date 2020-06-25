@@ -146,7 +146,7 @@ namespace AcmeGambling.Tests
         }
 
         [Test]
-        public void WhenThereIsOnlyOneLineWithOneAppleAndTwoWildCardThenDepositShouldIncreaseByTheSumOfWinCoefficientOfTheAppleMultipliedBySteak()
+        public void WhenThereIsOnlyOneLineWithOneAppleAndTwoWildCardsThenDepositShouldIncreaseByTheSumOfWinCoefficientOfTheAppleMultipliedBySteak()
         {
             var apple = new Apple();
             var wildCard = new Wildcard();
@@ -160,6 +160,114 @@ namespace AcmeGambling.Tests
                 {
                     apple, wildCard, wildCard,
                     apple, new Banana(), new Pineapple(),
+                    apple, new Banana(), new Pineapple(),
+                    apple, new Banana(), new Pineapple()
+                }
+            );
+
+            _randomSymbolGenerator.Generate(Arg.Any<IReadOnlyCollection<Symbol>>())
+                .Returns(_ => nonWiningCombination.Dequeue());
+            _slotMachine.Deposit(depositAmount);
+            _slotMachine.Spin(steakAmount);
+            Assert.That(_slotMachine.Balance, Is.EqualTo(expectedBalance));
+        }
+
+        [Test]
+        public void WhenThereIsOnlyOneLineWithTwoWildCardsAndOneAppleThenDepositShouldIncreaseByTheSumOfWinCoefficientOfTheAppleMultipliedBySteak()
+        {
+            var apple = new Apple();
+            var wildCard = new Wildcard();
+            const decimal depositAmount = 100;
+            const decimal steakAmount = 10;
+            var expectedBalance = depositAmount + apple.WinCoefficient * steakAmount;
+
+            var nonWiningCombination = new Queue<Symbol>
+            (
+                new Symbol[]
+                {
+                    apple, wildCard, wildCard,
+                    apple, new Banana(), new Pineapple(),
+                    apple, new Banana(), new Pineapple(),
+                    apple, new Banana(), new Pineapple()
+                }
+            );
+
+            _randomSymbolGenerator.Generate(Arg.Any<IReadOnlyCollection<Symbol>>())
+                .Returns(_ => nonWiningCombination.Dequeue());
+            _slotMachine.Deposit(depositAmount);
+            _slotMachine.Spin(steakAmount);
+            Assert.That(_slotMachine.Balance, Is.EqualTo(expectedBalance));
+        }
+
+        [Test]
+        public void WhenFirstSymbolInFirstRowIsBananaAndSecondIsWildCardAndThirdSymbolIsAppleAndThereAreNoOtherWinningRowsBalanceShouldBeReduced()
+        {
+            var apple = new Apple();
+            var wildCard = new Wildcard();
+            const decimal depositAmount = 100;
+            const decimal steakAmount = 10;
+            var expectedBalance = depositAmount - steakAmount;
+
+            var nonWiningCombination = new Queue<Symbol>
+            (
+                new Symbol[]
+                {
+                    new Banana(), wildCard, apple,
+                    apple, new Pineapple(), new Banana(),
+                    apple, new Banana(), new Pineapple(),
+                    apple, new Banana(), new Pineapple()
+                }
+            );
+
+            _randomSymbolGenerator.Generate(Arg.Any<IReadOnlyCollection<Symbol>>())
+                .Returns(_ => nonWiningCombination.Dequeue());
+            _slotMachine.Deposit(depositAmount);
+            _slotMachine.Spin(steakAmount);
+            Assert.That(_slotMachine.Balance, Is.EqualTo(expectedBalance));
+        }
+
+        [Test]
+        public void WhenFirstRowIsAllWildCardsAndThereAreNoOtherWinningRowsBalanceShouldBeReduced()
+        {
+            var apple = new Apple();
+            var wildCard = new Wildcard();
+            const decimal depositAmount = 100;
+            const decimal steakAmount = 10;
+            var expectedBalance = depositAmount - steakAmount;
+
+            var nonWiningCombination = new Queue<Symbol>
+            (
+                new Symbol[]
+                {
+                    wildCard, wildCard, wildCard,
+                    apple, new Pineapple(), new Banana(),
+                    apple, new Banana(), new Pineapple(),
+                    apple, new Banana(), new Pineapple()
+                }
+            );
+
+            _randomSymbolGenerator.Generate(Arg.Any<IReadOnlyCollection<Symbol>>())
+                .Returns(_ => nonWiningCombination.Dequeue());
+            _slotMachine.Deposit(depositAmount);
+            _slotMachine.Spin(steakAmount);
+            Assert.That(_slotMachine.Balance, Is.EqualTo(expectedBalance));
+        }
+
+        [Test]
+        public void WhenFirstSymbolInFirstRowIsBananaAndSecondIsAppleCardAndThirdSymbolIsWildCardAndThereAreNoOtherWinningRowsBalanceShouldBeReduced()
+        {
+            var apple = new Apple();
+            var wildCard = new Wildcard();
+            const decimal depositAmount = 100;
+            const decimal steakAmount = 10;
+            var expectedBalance = depositAmount - steakAmount;
+
+            var nonWiningCombination = new Queue<Symbol>
+            (
+                new Symbol[]
+                {
+                    new Banana(), apple, wildCard,
+                    apple, new Pineapple(), new Banana(),
                     apple, new Banana(), new Pineapple(),
                     apple, new Banana(), new Pineapple()
                 }

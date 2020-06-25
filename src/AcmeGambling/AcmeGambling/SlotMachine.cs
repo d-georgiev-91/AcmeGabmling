@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using AcmeGambling.Symbols;
 
 namespace AcmeGambling
@@ -9,15 +8,16 @@ namespace AcmeGambling
     public class SlotMachine : ISlotMachine
     {
         private const int InitialBalance = 0;
-        
+
         // TODO: Inject and configure
         private const int ReelsCount = 3;
         private const int ReelSymbolsCount = 4;
+
         private static readonly IReadOnlyCollection<Symbol> PossibleSymbols = new List<Symbol>
         {
             new Apple(),
             new Banana(),
-            new Pineapple(), 
+            new Pineapple(),
             new Wildcard()
         };
 
@@ -51,54 +51,73 @@ namespace AcmeGambling
                 throw new ArgumentException($"{nameof(steak)} should be less or equal to {nameof(Balance)}");
             }
 
-            var machine = new Symbol[ReelSymbolsCount, ReelsCount];
-            var winCoefficient = 0m;
+            var reels = GenerateReels();
 
-            for (int symbolIndex = 0; symbolIndex < ReelSymbolsCount; symbolIndex++)
+            var totalWinCoefficient =  CalculateTotalWinCoefficient(reels);
+
+            if (totalWinCoefficient > 0)
             {
-                var matches = new Dictionary<Symbol, int>();
-
-                for (int reelIndex = 0; reelIndex < ReelsCount; reelIndex++)
-                {
-                    var symbol = _randomSymbolGenerator.Generate(PossibleSymbols);
-
-                    Console.Write(symbol.Character);
-
-                    machine[symbolIndex, reelIndex] = symbol;
-
-                    if (!matches.ContainsKey(symbol))
-                    {
-                        matches.Add(symbol, 0);
-                    }
-
-                    matches[symbol]++;
-                }
-
-                var mostFrequentSymbol = matches
-                    .OrderByDescending(m => m.Value)
-                    .First();
-
-                if (mostFrequentSymbol.Value == ReelsCount ||
-                    mostFrequentSymbol.Value == ReelsCount - 1 && matches.Count(s => s.Key is Wildcard) == 1 ||
-                    mostFrequentSymbol.Value == 1 && matches.Count(s => s.Key is Wildcard) == ReelsCount - 1
-                )
-                {
-                    winCoefficient += mostFrequentSymbol.Key.WinCoefficient * mostFrequentSymbol.Value;
-                }
-
-                Console.WriteLine();
-            }
-
-            Console.WriteLine(new string('-', ReelsCount));
-
-            if (winCoefficient > 0)
-            {
-                Balance += winCoefficient * steak;
+                Balance += steak * totalWinCoefficient;
             }
             else
             {
                 Balance -= steak;
             }
+        }
+
+        private Symbol[,] GenerateReels()
+        {
+            var machine = new Symbol[ReelSymbolsCount, ReelsCount];
+
+            for (int symbolIndex = 0; symbolIndex < ReelSymbolsCount; symbolIndex++)
+            {
+
+                for (int reelIndex = 0; reelIndex < ReelsCount; reelIndex++)
+                {
+                    var symbol = _randomSymbolGenerator.Generate(PossibleSymbols);
+                    machine[symbolIndex, reelIndex] = symbol;
+                }
+            }
+
+            return machine;
+        }
+
+        private decimal CalculateTotalWinCoefficient(Symbol[,] reels)
+        {
+            var totalWinCoefficient = 0m;
+
+            for (int symbolIndex = 0; symbolIndex < ReelSymbolsCount; symbolIndex++)
+            {
+                var symbol = reels[symbolIndex, 0];
+                var rowWinCoefficient = symbol.WinCoefficient;
+
+                for (int reelIndex = 1; reelIndex < ReelsCount; reelIndex++)
+                {
+                    var currentSymbol = reels[symbolIndex, reelIndex];
+
+                    if (symbol.GetType() == typeof(Wildcard))
+                    {
+                        currentSymbol = symbol;
+                    }
+
+                    if (currentSymbol.GetType() == typeof(Wildcard))
+                    {
+                        continue;
+                    }
+
+                    if (currentSymbol.GetType() != symbol.GetType())
+                    {
+                        rowWinCoefficient = 0m;
+                        break;
+                    }
+
+                    rowWinCoefficient += currentSymbol.WinCoefficient;
+                }
+
+                totalWinCoefficient += rowWinCoefficient;
+            }
+
+            return totalWinCoefficient;
         }
     }
 }
