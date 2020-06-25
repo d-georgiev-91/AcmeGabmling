@@ -88,16 +88,16 @@ namespace AcmeGambling
 
             for (int symbolIndex = 0; symbolIndex < ReelSymbolsCount; symbolIndex++)
             {
-                var symbol = reels[symbolIndex, 0];
-                var rowWinCoefficient = symbol.WinCoefficient;
+                var pivotSymbol = reels[symbolIndex, 0];
+                var rowWinCoefficient = pivotSymbol.WinCoefficient;
 
                 for (int reelIndex = 1; reelIndex < ReelsCount; reelIndex++)
                 {
                     var currentSymbol = reels[symbolIndex, reelIndex];
 
-                    if (symbol.GetType() == typeof(Wildcard))
+                    if (pivotSymbol.GetType() == typeof(Wildcard))
                     {
-                        currentSymbol = symbol;
+                        currentSymbol = pivotSymbol;
                     }
 
                     if (currentSymbol.GetType() == typeof(Wildcard))
@@ -105,7 +105,7 @@ namespace AcmeGambling
                         continue;
                     }
 
-                    if (currentSymbol.GetType() != symbol.GetType())
+                    if (currentSymbol.GetType() != pivotSymbol.GetType())
                     {
                         rowWinCoefficient = 0m;
                         break;
