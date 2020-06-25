@@ -106,7 +106,7 @@ namespace AcmeGambling.Tests
             _slotMachine.Deposit(depositAmount);
             var spinResult = _slotMachine.Spin(depositAmount);
             Assert.That(_slotMachine.Balance, Is.EqualTo(0));
-            Assert.That(spinResult.IsWin, Is.False);
+            Assert.That(spinResult.AmountWon, Is.Zero);
         }
 
         [Test]
@@ -132,7 +132,7 @@ namespace AcmeGambling.Tests
             _slotMachine.Deposit(depositAmount);
             var spinResult = _slotMachine.Spin(steakAmount);
             Assert.That(_slotMachine.Balance, Is.EqualTo(expectedBalance));
-            Assert.That(spinResult.IsWin, Is.False);
+            Assert.That(spinResult.AmountWon, Is.Zero);
         }
 
         [Test]
@@ -140,7 +140,8 @@ namespace AcmeGambling.Tests
         {
             const decimal depositAmount = 100;
             const decimal steakAmount = 10;
-            var expectedBalance = depositAmount + 3 * _apple.WinCoefficient * steakAmount;
+            var amountToWin = 3 * _apple.WinCoefficient * steakAmount;
+            var expectedBalance = depositAmount + amountToWin;
 
             var nonWiningCombination = new Queue<Symbol>
             (
@@ -158,7 +159,7 @@ namespace AcmeGambling.Tests
             _slotMachine.Deposit(depositAmount);
             var spinResult = _slotMachine.Spin(steakAmount);
             Assert.That(_slotMachine.Balance, Is.EqualTo(expectedBalance));
-            Assert.That(spinResult.IsWin, Is.True);
+            Assert.That(spinResult.AmountWon, Is.EqualTo(amountToWin));
         }
 
         [Test]
@@ -166,7 +167,8 @@ namespace AcmeGambling.Tests
         {
             const decimal depositAmount = 100;
             const decimal steakAmount = 10;
-            var expectedBalance = depositAmount + 2 * _apple.WinCoefficient * steakAmount;
+            var amountToWin = 2 * _apple.WinCoefficient * steakAmount;
+            var expectedBalance = depositAmount + amountToWin;
 
             var nonWiningCombination = new Queue<Symbol>
             (
@@ -184,7 +186,7 @@ namespace AcmeGambling.Tests
             _slotMachine.Deposit(depositAmount);
             var spinResult = _slotMachine.Spin(steakAmount);
             Assert.That(_slotMachine.Balance, Is.EqualTo(expectedBalance));
-            Assert.That(spinResult.IsWin, Is.True);
+            Assert.That(spinResult.AmountWon, Is.EqualTo(amountToWin));
         }
 
         [Test]
@@ -192,7 +194,8 @@ namespace AcmeGambling.Tests
         {
             const decimal depositAmount = 100;
             const decimal steakAmount = 10;
-            var expectedBalance = depositAmount + _apple.WinCoefficient * steakAmount;
+            var amountToWin = _apple.WinCoefficient * steakAmount;
+            var expectedBalance = depositAmount + amountToWin;
 
             var nonWiningCombination = new Queue<Symbol>
             (
@@ -210,7 +213,7 @@ namespace AcmeGambling.Tests
             _slotMachine.Deposit(depositAmount);
             var spinResult = _slotMachine.Spin(steakAmount);
             Assert.That(_slotMachine.Balance, Is.EqualTo(expectedBalance));
-            Assert.That(spinResult.IsWin, Is.True);
+            Assert.That(spinResult.AmountWon, Is.EqualTo(amountToWin));
         }
 
         [Test]
@@ -218,7 +221,8 @@ namespace AcmeGambling.Tests
         {
             const decimal depositAmount = 100;
             const decimal steakAmount = 10;
-            var expectedBalance = depositAmount + _apple.WinCoefficient * steakAmount;
+            var amountToWin = _apple.WinCoefficient * steakAmount;
+            var expectedBalance = depositAmount + amountToWin;
 
             var nonWiningCombination = new Queue<Symbol>
             (
@@ -236,7 +240,7 @@ namespace AcmeGambling.Tests
             _slotMachine.Deposit(depositAmount);
             var spinResult = _slotMachine.Spin(steakAmount);
             Assert.That(_slotMachine.Balance, Is.EqualTo(expectedBalance));
-            Assert.That(spinResult.IsWin, Is.True);
+            Assert.That(spinResult.AmountWon, Is.EqualTo(amountToWin));
         }
 
         [Test]
@@ -262,7 +266,7 @@ namespace AcmeGambling.Tests
             _slotMachine.Deposit(depositAmount);
             var spinResult = _slotMachine.Spin(steakAmount);
             Assert.That(_slotMachine.Balance, Is.EqualTo(expectedBalance));
-            Assert.That(spinResult.IsWin, Is.False);
+            Assert.That(spinResult.AmountWon, Is.Zero);
         }
 
         [Test]
@@ -288,7 +292,7 @@ namespace AcmeGambling.Tests
             _slotMachine.Deposit(depositAmount);
             var spinResult = _slotMachine.Spin(steakAmount);
             Assert.That(_slotMachine.Balance, Is.EqualTo(expectedBalance));
-            Assert.That(spinResult.IsWin, Is.False);
+            Assert.That(spinResult.AmountWon, Is.Zero);
         }
 
         [Test]
@@ -314,7 +318,7 @@ namespace AcmeGambling.Tests
             _slotMachine.Deposit(depositAmount);
             var spinResult = _slotMachine.Spin(steakAmount);
             Assert.That(_slotMachine.Balance, Is.EqualTo(expectedBalance));
-            Assert.That(spinResult.IsWin, Is.False);
+            Assert.That(spinResult.AmountWon, Is.Zero);
         }
 
         [Test]

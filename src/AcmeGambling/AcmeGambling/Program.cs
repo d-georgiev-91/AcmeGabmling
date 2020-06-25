@@ -19,7 +19,7 @@ namespace AcmeGambling
             var serviceProvider = services.BuildServiceProvider();
 
             // entry to run app
-            await serviceProvider.GetService<App>().Run(args);
+            await serviceProvider.GetService<ConsoleSlotMachine>().Run(args);
         }
 
         private static void ConfigureServices(IServiceCollection services)
@@ -32,12 +32,15 @@ namespace AcmeGambling
                 .Build();
 
             services.Configure<SymbolsSettings>(configuration.GetSection("Symbols"));
+            services.Configure<SlotMachineSettings>(configuration.GetSection("SlotMachine"));
 
             // add services:
+            services.AddTransient<IRandomSymbolGenerator, RandomSymbolGenerator>();
+            services.AddTransient<ISymbolsProvider, SymbolsProvider>();
             services.AddTransient<ISlotMachine, SlotMachine>();
 
             // add app
-            services.AddTransient<App>();
+            services.AddTransient<ConsoleSlotMachine>();
         }
     }
 }

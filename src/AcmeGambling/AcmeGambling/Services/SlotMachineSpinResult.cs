@@ -8,9 +8,9 @@ namespace AcmeGambling.Services
     public class SlotMachineSpinResult
     {
         /// <summary>
-        /// Get/set if spin result is win or lose
+        /// Gets/sets the won amount
         /// </summary>
-        public bool IsWin { get; set; }
+        public decimal AmountWon { get; set; }
 
         /// <summary>
         /// The generated symbols for spin of machine reels

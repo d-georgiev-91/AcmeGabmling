@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using AcmeGambling.Settings;
 using AcmeGambling.Symbols;
 using Microsoft.Extensions.Options;
@@ -14,10 +13,11 @@ namespace AcmeGambling.Services
         private readonly IRandomSymbolGenerator _randomSymbolGenerator;
         private readonly int _reelsCount;
         private readonly int _reelSymbolsCount;
-        private ISymbolsProvider _symbolsProvider;
+        private readonly ISymbolsProvider _symbolsProvider;
 
-        public SlotMachine(IRandomSymbolGenerator randomSymbolGenerator, 
-            IOptions<SlotMachineSettings> slotMachineSettings, ISymbolsProvider symbolsProvider)
+        public SlotMachine(IRandomSymbolGenerator randomSymbolGenerator,
+            IOptions<SlotMachineSettings> slotMachineSettings,
+            ISymbolsProvider symbolsProvider)
         {
             _randomSymbolGenerator = randomSymbolGenerator;
             _symbolsProvider = symbolsProvider;
@@ -51,15 +51,15 @@ namespace AcmeGambling.Services
             var result = new SlotMachineSpinResult
             {
                 Reels = GenerateReels(),
-                IsWin = false
+                AmountWon = 0m
             };
 
             var totalWinCoefficient = CalculateTotalWinCoefficient(result.Reels);
 
             if (totalWinCoefficient > 0)
             {
-                Balance += steak * totalWinCoefficient;
-                result.IsWin = true;
+                result.AmountWon = steak * totalWinCoefficient;
+                Balance += result.AmountWon;
             }
             else
             {
