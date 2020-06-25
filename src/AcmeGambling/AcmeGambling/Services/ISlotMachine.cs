@@ -1,4 +1,4 @@
-﻿namespace AcmeGambling
+﻿namespace AcmeGambling.Services
 {
     /// <summary>
     /// Slot machine

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using System.Threading.Tasks;
+using AcmeGambling.Services;
 using AcmeGambling.Settings;
 
 namespace AcmeGambling

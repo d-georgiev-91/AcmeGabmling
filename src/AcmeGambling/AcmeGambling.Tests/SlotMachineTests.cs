@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using AcmeGambling.Services;
 using AcmeGambling.Settings;
 using AcmeGambling.Symbols;
 using Microsoft.Extensions.Configuration;

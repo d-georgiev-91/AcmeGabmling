@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using AcmeGambling.Symbols;
 
-namespace AcmeGambling
+namespace AcmeGambling.Services
 {
     /// <summary>
     /// Random symbols generator

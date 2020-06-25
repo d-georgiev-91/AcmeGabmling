@@ -1,6 +1,6 @@
 ﻿using AcmeGambling.Symbols;
 
-namespace AcmeGambling
+namespace AcmeGambling.Services
 {
     /// <summary>
     /// Wrapper class providing data after slot machine is spun

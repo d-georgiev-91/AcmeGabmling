@@ -4,7 +4,7 @@ using AcmeGambling.Settings;
 using AcmeGambling.Symbols;
 using Microsoft.Extensions.Options;
 
-namespace AcmeGambling
+namespace AcmeGambling.Services
 {
     public class SymbolsProvider : ISymbolsProvider
     {

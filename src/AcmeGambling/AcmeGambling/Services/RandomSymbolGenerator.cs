@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AcmeGambling.Symbols;
 
-namespace AcmeGambling
+namespace AcmeGambling.Services
 {
     /// <summary>
     /// Trivial random symbols generator
