@@ -44,25 +44,32 @@ namespace AcmeGambling
         }
 
         /// <inheritdoc cref="ISlotMachine.Spin"/>
-        public void Spin(decimal steak)
+        public SlotMachineSpinResult Spin(decimal steak)
         {
             if (steak > Balance)
             {
                 throw new ArgumentException($"{nameof(steak)} should be less or equal to {nameof(Balance)}");
             }
 
-            var reels = GenerateReels();
+            var result = new SlotMachineSpinResult
+            {
+                Reels = GenerateReels(),
+                IsWin = false
+            };
 
-            var totalWinCoefficient =  CalculateTotalWinCoefficient(reels);
+            var totalWinCoefficient = CalculateTotalWinCoefficient(result.Reels);
 
             if (totalWinCoefficient > 0)
             {
                 Balance += steak * totalWinCoefficient;
+                result.IsWin = true;
             }
             else
             {
                 Balance -= steak;
             }
+
+            return result;
         }
 
         private Symbol[,] GenerateReels()
@@ -97,7 +104,7 @@ namespace AcmeGambling
 
                     if (pivotSymbol.GetType() == typeof(Wildcard))
                     {
-                        currentSymbol = pivotSymbol;
+                        pivotSymbol = currentSymbol;
                     }
 
                     if (currentSymbol.GetType() == typeof(Wildcard))

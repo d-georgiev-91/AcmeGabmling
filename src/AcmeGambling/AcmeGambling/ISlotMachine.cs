@@ -19,6 +19,7 @@
         /// Spins the sloth machine reels and updates balance base on if it's a win or lose
         /// </summary>
         /// <param name="steak">The steak</param>
-        void Spin(decimal steak);
+        /// <returns>Result of the spin operation</returns>
+        SlotMachineSpinResult Spin(decimal steak);
     }
 }

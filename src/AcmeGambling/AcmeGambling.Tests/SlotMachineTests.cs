@@ -63,8 +63,9 @@ namespace AcmeGambling.Tests
             _randomSymbolGenerator.Generate(Arg.Any<IReadOnlyCollection<Symbol>>())
                 .Returns(_ => nonWiningCombination.Dequeue());
             _slotMachine.Deposit(depositAmount);
-            _slotMachine.Spin(depositAmount);
+            var spinResult = _slotMachine.Spin(depositAmount);
             Assert.That(_slotMachine.Balance, Is.EqualTo(0));
+            Assert.That(spinResult.IsWin, Is.False);
         }
 
         [Test]
@@ -88,8 +89,9 @@ namespace AcmeGambling.Tests
             _randomSymbolGenerator.Generate(Arg.Any<IReadOnlyCollection<Symbol>>())
                 .Returns(_ => nonWiningCombination.Dequeue());
             _slotMachine.Deposit(depositAmount);
-            _slotMachine.Spin(steakAmount);
+            var spinResult = _slotMachine.Spin(steakAmount);
             Assert.That(_slotMachine.Balance, Is.EqualTo(expectedBalance));
+            Assert.That(spinResult.IsWin, Is.False);
         }
 
         [Test]
@@ -114,8 +116,9 @@ namespace AcmeGambling.Tests
             _randomSymbolGenerator.Generate(Arg.Any<IReadOnlyCollection<Symbol>>())
                 .Returns(_ => nonWiningCombination.Dequeue());
             _slotMachine.Deposit(depositAmount);
-            _slotMachine.Spin(steakAmount);
+            var spinResult = _slotMachine.Spin(steakAmount);
             Assert.That(_slotMachine.Balance, Is.EqualTo(expectedBalance));
+            Assert.That(spinResult.IsWin, Is.True);
         }
 
         [Test]
@@ -141,8 +144,9 @@ namespace AcmeGambling.Tests
             _randomSymbolGenerator.Generate(Arg.Any<IReadOnlyCollection<Symbol>>())
                 .Returns(_ => nonWiningCombination.Dequeue());
             _slotMachine.Deposit(depositAmount);
-            _slotMachine.Spin(steakAmount);
+            var spinResult = _slotMachine.Spin(steakAmount);
             Assert.That(_slotMachine.Balance, Is.EqualTo(expectedBalance));
+            Assert.That(spinResult.IsWin, Is.True);
         }
 
         [Test]
@@ -168,8 +172,9 @@ namespace AcmeGambling.Tests
             _randomSymbolGenerator.Generate(Arg.Any<IReadOnlyCollection<Symbol>>())
                 .Returns(_ => nonWiningCombination.Dequeue());
             _slotMachine.Deposit(depositAmount);
-            _slotMachine.Spin(steakAmount);
+            var spinResult = _slotMachine.Spin(steakAmount);
             Assert.That(_slotMachine.Balance, Is.EqualTo(expectedBalance));
+            Assert.That(spinResult.IsWin, Is.True);
         }
 
         [Test]
@@ -185,7 +190,7 @@ namespace AcmeGambling.Tests
             (
                 new Symbol[]
                 {
-                    apple, wildCard, wildCard,
+                    wildCard, wildCard, apple,
                     apple, new Banana(), new Pineapple(),
                     apple, new Banana(), new Pineapple(),
                     apple, new Banana(), new Pineapple()
@@ -195,8 +200,9 @@ namespace AcmeGambling.Tests
             _randomSymbolGenerator.Generate(Arg.Any<IReadOnlyCollection<Symbol>>())
                 .Returns(_ => nonWiningCombination.Dequeue());
             _slotMachine.Deposit(depositAmount);
-            _slotMachine.Spin(steakAmount);
+            var spinResult = _slotMachine.Spin(steakAmount);
             Assert.That(_slotMachine.Balance, Is.EqualTo(expectedBalance));
+            Assert.That(spinResult.IsWin, Is.True);
         }
 
         [Test]
@@ -222,8 +228,9 @@ namespace AcmeGambling.Tests
             _randomSymbolGenerator.Generate(Arg.Any<IReadOnlyCollection<Symbol>>())
                 .Returns(_ => nonWiningCombination.Dequeue());
             _slotMachine.Deposit(depositAmount);
-            _slotMachine.Spin(steakAmount);
+            var spinResult = _slotMachine.Spin(steakAmount);
             Assert.That(_slotMachine.Balance, Is.EqualTo(expectedBalance));
+            Assert.That(spinResult.IsWin, Is.False);
         }
 
         [Test]
@@ -249,8 +256,9 @@ namespace AcmeGambling.Tests
             _randomSymbolGenerator.Generate(Arg.Any<IReadOnlyCollection<Symbol>>())
                 .Returns(_ => nonWiningCombination.Dequeue());
             _slotMachine.Deposit(depositAmount);
-            _slotMachine.Spin(steakAmount);
+            var spinResult = _slotMachine.Spin(steakAmount);
             Assert.That(_slotMachine.Balance, Is.EqualTo(expectedBalance));
+            Assert.That(spinResult.IsWin, Is.False);
         }
 
         [Test]
@@ -276,8 +284,9 @@ namespace AcmeGambling.Tests
             _randomSymbolGenerator.Generate(Arg.Any<IReadOnlyCollection<Symbol>>())
                 .Returns(_ => nonWiningCombination.Dequeue());
             _slotMachine.Deposit(depositAmount);
-            _slotMachine.Spin(steakAmount);
+            var spinResult = _slotMachine.Spin(steakAmount);
             Assert.That(_slotMachine.Balance, Is.EqualTo(expectedBalance));
+            Assert.That(spinResult.IsWin, Is.False);
         }
 
         [Test]
